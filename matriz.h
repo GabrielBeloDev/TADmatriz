@@ -4,7 +4,7 @@
 
 typedef struct Matriz
 {
-    int **dados; // ponteiro para um array de duas dimensões(como anselmo disse nas aulas)
+    int *dados; // ponteiro para um array de duas dimensões(como anselmo disse nas aulas)
     int linhas;
     int colunas;
 } Matriz;
@@ -15,5 +15,7 @@ void definirElemento(Matriz *m, int i, int j, int valor);
 int obterElemento(Matriz *m, int i, int j);
 Matriz *multiplicarMatrizes(Matriz *a, Matriz *b);
 Matriz *transposta(Matriz *m);
+void imprimirMatriz(Matriz *m);
+
 
 #endif

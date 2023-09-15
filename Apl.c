@@ -3,18 +3,6 @@
 #include "matriz.h"
 #include <stdio.h>
 
-void imprimirMatriz(Matriz *m)
-{
-    for (int i = 0; i < m->linhas; i++)
-    {
-        for (int j = 0; j < m->colunas; j++)
-        {
-            printf("%d ", m->dados[i][j]); // imprime cada elemento da matriz
-        }
-        printf("\n");
-    }
-}
-
 int main()
 {
     Matriz *A = NULL, *B = NULL, *resultado; // ponteiros para as matrizes
@@ -45,7 +33,11 @@ int main()
             printf("Digite o número de colunas para A: ");
             scanf("%d", &colunas);
             A = criarMatriz(linhas, colunas); // chama a função criarMatriz e atribui o retorno ao ponteiro A
-            printf("Matriz A criada.\n");
+            if (A != NULL) {
+                printf("Matriz A criada.\n");
+            } else {
+                printf("Erro ao criar Matriz A.\n");
+            }
             break;
 
         case 2:
@@ -54,8 +46,13 @@ int main()
             printf("Digite o número de colunas para B: ");
             scanf("%d", &colunas);
             B = criarMatriz(linhas, colunas); // chama a função criarMatriz e atribui o retorno ao ponteiro B}
-            printf("Matriz B criada.\n");
+            if (B != NULL) {
+                printf("Matriz B criada.\n");
+            } else {
+                printf("Erro ao criar Matriz B.\n");
+            }
             break;
+
 
         case 3:
             if (A == NULL)
@@ -93,38 +90,34 @@ int main()
 
         case 5:
             resultado = multiplicarMatrizes(A, B);
-            if (resultado == NULL)
-            {
-                printf("Multiplicação não é possível.\n");
-                break;
+            if (resultado != NULL) {
+                printf("Resultado da multiplicação de A por B:\n");
+                imprimirMatriz(resultado);
+                destruirMatriz(resultado);
+            } else {
+                printf("Multiplicação não é possível ou falha ao alocar matriz.\n");
             }
-            printf("Resultado da multiplicação de A por B:\n");
-            imprimirMatriz(resultado);
-            destruirMatriz(resultado);
             break;
 
         case 6:
             resultado = transposta(A);
-            if (resultado == NULL)
-            {
-                printf("Erro na transposta de A.\n");
-                break;
+            if (resultado != NULL) {
+                printf("Resultado da transposta de A:\n");
+                imprimirMatriz(resultado);
+                destruirMatriz(resultado);
+            } else {
+                printf("Erro na transposta de A ou falha ao alocar matriz.\n");
             }
-            printf("Resultado da transposta de A:\n");
-            imprimirMatriz(resultado);
-            destruirMatriz(resultado);
             break;
-
         case 7:
             resultado = transposta(B);
-            if (resultado == NULL)
-            {
-                printf("Erro na transposta de B.\n");
-                break;
+            if (resultado != NULL) {
+                printf("Resultado da transposta de B:\n");
+                imprimirMatriz(resultado);
+                destruirMatriz(resultado);
+            } else {
+                printf("Erro na transposta de B ou falha ao alocar matriz.\n");
             }
-            printf("Resultado da transposta de B:\n");
-            imprimirMatriz(resultado);
-            destruirMatriz(resultado);
             break;
 
         case 8:

@@ -10,29 +10,12 @@ Matriz *criarMatriz(int linhas, int colunas)
         novaMatriz->linhas = linhas; // inicializei a matriz linhas e colunas
         novaMatriz->colunas = colunas;
 
-        novaMatriz->dados = (int **)malloc(linhas * sizeof(int *)); // aloquei a memória para as linhas da matriz
-        if (novaMatriz->dados != NULL)                              // testei
-        {
-            for (int i = 0; i < linhas; i++)
+        novaMatriz->dados = (int *)malloc(linhas * colunas * sizeof(int)); // aloquei a memória para os elementos da matriz
+        if (novaMatriz->dados != NULL){                                    // testei
+
+            for (int i = 0; i < linhas * colunas; i++)
             {
-                novaMatriz->dados[i] = (int *)malloc(colunas * sizeof(int)); // aqui aloquei a memória para cada coluna
-                if (novaMatriz->dados[i] != NULL)                            // testei
-                {
-                    for (int j = 0; j < colunas; j++)
-                    {
-                        novaMatriz->dados[i][j] = 0; //  atribui 0 a cada elemento da matriz, ou seja, foi criada com valor 0 todos os elementos
-                    }
-                }
-                else
-                {
-                    for (int k = 0; k < i; k++)
-                    {
-                        free(novaMatriz->dados[k]); // libera a memória se alguma linha aqui falhar
-                    }
-                    free(novaMatriz->dados);
-                    free(novaMatriz);
-                    return NULL;
-                }
+                novaMatriz->dados[i] = 0; // atribui 0 a cada elemento da matriz
             }
         }
         else
@@ -53,30 +36,9 @@ void destruirMatriz(Matriz *m)
 {
     if (m != NULL) // testei
     {
-        for (int i = 0; i < m->linhas; i++) // percorre as linhas e destroi cada uma
-        {
-            free(m->dados[i]); // libera a memória de cada linha
-        }
-        free(m->dados); // libera a memória do ponteiro para o array de duas dimensões ou seja o array de linhas e colunas
-        free(m);        // libera a matriz
+        free(m->dados); // libera a memória do vetor de elementos
+        free(m);       // libera a matriz
     }
-}
-
-void definirElemento(Matriz *m, int i, int j, int valor)
-{
-    if (m != NULL && i < m->linhas && j < m->colunas) // testei e verifiquei se a matriz é válida e os índices estão dentro dos limites
-    {
-        m->dados[i][j] = valor; // atribui o valor
-    }
-}
-
-int obterElemento(Matriz *m, int i, int j)
-{
-    if (m != NULL && i < m->linhas && j < m->colunas) // testei e verifiquei se a matriz é válida e os índices estão dentro dos limites
-    {
-        return m->dados[i][j]; // retorna o valor do elemento na matriz
-    }
-    return -1; // como declarei sendo int,botei o -1 para indicar erro
 }
 
 Matriz *multiplicarMatrizes(Matriz *a, Matriz *b)
@@ -90,16 +52,37 @@ Matriz *multiplicarMatrizes(Matriz *a, Matriz *b)
             {
                 for (int j = 0; j < b->colunas; j++)
                 {
+                    int soma = 0;
                     for (int k = 0; k < a->colunas; k++)
                     {
-                        resultado->dados[i][j] += a->dados[i][k] * b->dados[k][j]; // aqui multipliquei as matrizes
+                        soma += a->dados[i * a->colunas + k] * b->dados[k * b->colunas + j]; // aqui multipliquei as matrizes
                     }
+                    resultado->dados[i * resultado->colunas + j] = soma; // atribui o valor da soma na matriz resultado
                 }
             }
         }
         return resultado;
     }
     return NULL; // indica erro se as matrizes não forem válidas
+}
+
+void definirElemento(Matriz *m, int i, int j, int valor)
+{
+    if (m != NULL && i >= 0 && i < m->linhas && j >= 0 && j < m->colunas)  // testei e verifiquei se a matriz é válida e os índices estão dentro dos limites
+    {
+        int index = i * m->colunas + j;
+        m->dados[index] = valor; // atribui o valor
+    }
+}
+
+int obterElemento(Matriz *m, int i, int j)
+{
+    if (m != NULL && i >= 0 && i < m->linhas && j >= 0 && j < m->colunas) // testei e verifiquei se a matriz é válida e os índices estão dentro dos limites
+    {
+        int index = i * m->colunas + j;
+        return m->dados[index]; // retorna o valor do elemento na matriz
+    }
+    return -1; // como declarei sendo int,botei o -1 para indicar erro
 }
 
 Matriz *transposta(Matriz *m)
@@ -113,11 +96,25 @@ Matriz *transposta(Matriz *m)
             {
                 for (int j = 0; j < m->colunas; j++)
                 {
-                    resultado->dados[j][i] = m->dados[i][j]; // verifica a transposta da matriz e atribui ao resultado
+                    int elemento = obterElemento(m, i, j);
+                    definirElemento(resultado, j, i, elemento); 
                 }
             }
         }
         return resultado;
     }
     return NULL; // indica erro
+}
+
+void imprimirMatriz(Matriz *m) {
+    if (m != NULL) {
+        for (int i = 0; i < m->linhas; i++) {
+            for (int j = 0; j < m->colunas; j++) {
+                printf("%d ", obterElemento(m, i, j));
+            }
+            printf("\n");
+        }
+    } else {
+        printf("Matriz é NULL\n");
+    }
 }
